@@ -7,6 +7,7 @@ export default function Home() {
   return (
     <StoreProvider>
       <main className="min-h-dvh container py-4 flex flex-col items-center gap-4">
+        <FormCard />
       </main>
     </StoreProvider>
   );
