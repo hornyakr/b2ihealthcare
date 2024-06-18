@@ -14,6 +14,7 @@ interface Props {
 }
 
 export default function SearchPopover({ input }: Props) {
+    const [firstInitialized, setFirstInitialized] = useState<boolean>(true)
     const [isOpen, setIsOpen] = useState<boolean>(false)
     const triggerRef = useRef<HTMLDivElement>(null)
 
@@ -47,7 +48,7 @@ export default function SearchPopover({ input }: Props) {
                 onOpenAutoFocus={(e) => e.preventDefault()}
                 onInteractOutside={handleInteractOutside}
             >
-                <GetResource />
+                <GetResource firstInitialized={firstInitialized} setFirstInitialized={setFirstInitialized} />
             </PopoverContent>
         </Popover >
     )
