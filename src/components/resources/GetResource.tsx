@@ -38,14 +38,19 @@ export type Item = {
     resourcePathSegments: string
 }
 
-export function GetResource() {
+interface Props {
+    firstInitialized: boolean
+    setFirstInitialized: (newValue: boolean) => void
+}
+
+export function GetResource({ firstInitialized, setFirstInitialized }: Props) {
     const { toast } = useToast()
     const dispatch = useDispatch<AppDispatch>()
     const formState = useAppSelector(selectSearch)
-    const [initializedResult, setInitializedResult] = useState<boolean>(formState.result ? true : false)
+    const [previousSearch, setPreviousSearch] = useState<string>(formState.form.search)
 
     const { data, error, isLoading } = useGetResourcesQuery({ title: formState.form.search, limit: formState.form.limit }, {
-        skip: !initializedResult
+        skip: firstInitialized
     })
 
     function getErrorMessage(error: FetchBaseQueryError | SerializedError): string {
@@ -58,6 +63,18 @@ export function GetResource() {
 
     function selectResult(value: string) {
         dispatch(changeResult(value))
+
+        const matchingItem = data?.items
+            .filter((item: Item) => item.id === value)
+            .map((item: Item) => `${item.id} | ${item.title}`)
+            .join(', ')
+
+        console.log(matchingItem)
+
+        matchingItem && toast({
+            title: "Changed result",
+            description: `New result: ${matchingItem || 'Item not found'}`,
+        })
     }
 
     function highlightMatchingText(text: string) {
@@ -70,23 +87,11 @@ export function GetResource() {
     }
 
     useEffect(() => {
-        if (formState.result && initializedResult) {
-            const matchingItems = data?.items
-                .filter((item: Item) => item.id === formState.result)
-                .map((item: Item) => `${item.id} | ${item.title}`)
-                .join(', ')
-
-            toast({
-                title: "Changed result",
-                description: `New result: ${matchingItems || 'Item not found'}`,
-            })
+        if (firstInitialized && previousSearch !== formState.form.search) {
+            setFirstInitialized(false)
+            setPreviousSearch(formState.form.search)
         }
-
-        if (formState.form.search && !initializedResult) {
-            setInitializedResult(true)
-        }
-
-    }, [formState])
+    }, [formState.form.search])
 
 
     return (
