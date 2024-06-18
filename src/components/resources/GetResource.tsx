@@ -69,8 +69,6 @@ export function GetResource({ firstInitialized, setFirstInitialized }: Props) {
             .map((item: Item) => `${item.id} | ${item.title}`)
             .join(', ')
 
-        console.log(matchingItem)
-
         matchingItem && toast({
             title: "Changed result",
             description: `New result: ${matchingItem || 'Item not found'}`,
