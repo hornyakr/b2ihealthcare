@@ -116,7 +116,7 @@ export function GetResource() {
                         </AlertDescription>
                     </Alert>
                 ) : data?.items.length === 0 ? (
-                    <Alert>
+                    <Alert variant={"warning"}>
                         <Info className="h-4 w-4" />
                         <AlertTitle>No data</AlertTitle>
                         <AlertDescription>
